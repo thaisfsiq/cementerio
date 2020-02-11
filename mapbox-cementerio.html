@@ -1,0 +1,88 @@
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Mapbox - Cementerio Girona - Thais Fontenelle</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%
+        }
+    </style>
+    <script>
+        //Añadir vuestor token y vuestro estilo
+        function init() {
+            mapboxgl.accessToken =
+                'pk.eyJ1IjoidGhhaXNmcyIsImEiOiJjazVtbmwxM2oweWZ5M2psYmM5OXJvcXoxIn0.hPkZ62LrWH86ILED_5eAyw';
+            var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/thaisfs/ck6ie2r1e0and1inwvg0uuq0k',
+                center: [2.8363414, 41.9721784],
+                zoom: 16,
+                attributionControl: false
+            });
+            map.addControl(new mapboxgl.AttributionControl({compact: true}));
+            map.addControl(new mapboxgl.NavigationControl());
+
+
+            map.on('load', function () {
+                map.addSource("cementerio_source", {
+                    type: "vector",
+                    url: "mapbox://thaisfs.aacxjzsm" //poner mapbox://vuestro id
+                }); //fin map source
+
+                map.addLayer({
+                    id: "cementerio",
+                    type: "line",
+                    source: "cementerio_source",
+                    'source-layer': "sepulturainstamaps-4hd4y9", //poner vuestro titulo capa
+                    paint:{
+                        'line-color':"#00ff00",
+                        "line-width":3
+                    }
+                });
+            });
+
+
+             map.on('click','cementerio',function(e){
+
+                    var text = "";
+                    //console.info(e);
+                    for (key in e.features[0].properties){
+
+                      text += "<b>"+key+"</b>:"+e.features[0].properties[key]+"<br>";
+                    }
+                    new mapboxgl.Popup()
+                        .setLngLat(e.lngLat)
+                        .setHTML(text)
+                        .addTo(map);
+
+                    });
+
+                  map.on('mouseenter', 'cementerio', function() {
+                      map.getCanvas().style.cursor = 'pointer';                    
+                  });
+
+                  map.on('mouseleave', 'cementerio', function() {
+                     map.getCanvas().style.cursor = '';                    
+                  });
+
+
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <div id="map"></div>
+</body>
+
+</html>
